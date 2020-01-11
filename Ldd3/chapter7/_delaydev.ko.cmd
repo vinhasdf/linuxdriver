@@ -1,1 +1,0 @@
-cmd_/home/vinh/Desktop/Ldd3/chapter7/delaydev.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o /home/vinh/Desktop/Ldd3/chapter7/delaydev.ko /home/vinh/Desktop/Ldd3/chapter7/delaydev.o /home/vinh/Desktop/Ldd3/chapter7/delaydev.mod.o ;  true

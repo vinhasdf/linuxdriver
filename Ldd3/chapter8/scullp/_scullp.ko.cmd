@@ -1,1 +1,0 @@
-cmd_/home/vinh/Desktop/Ldd3/chapter8/scullp/scullp.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o /home/vinh/Desktop/Ldd3/chapter8/scullp/scullp.ko /home/vinh/Desktop/Ldd3/chapter8/scullp/scullp.o /home/vinh/Desktop/Ldd3/chapter8/scullp/scullp.mod.o ;  true
