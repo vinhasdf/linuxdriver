@@ -170,8 +170,8 @@ static void short_exit(void)
 	// }
 	// class_destroy(short_class);
 	// release_region(short_base, NR_OF_DEVICE);
-	// unregister_chrdev_region(short_dev, NR_OF_DEVICE);
-	//a = (unsigned int)&vitual[10]
+	// unregister_chrdev_region(short_dev, NR_OF_DEVICE
+	//a = (unsigned int)&vitual[10]abc
 	outl(((unsigned int)1<<15), portclr);
 	wmb();
 
