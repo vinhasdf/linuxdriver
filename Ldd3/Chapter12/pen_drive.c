@@ -25,7 +25,7 @@ int pend_probe(struct usb_interface *intf, const struct usb_device_id *id)
 	id_if = intf->cur_altsetting;
 
 	printk(KERN_INFO "Pen i/f %d now probed: (%04X:%04X)\n", 
-		id_if->desc.bInterfaceNumber,id->idVendor, id->idProduct);
+		id_if->desc.bInterfaceNumber, id->idVendor, id->idProduct);
 	printk(KERN_INFO "Number of endpoint: %d\n", id_if->desc.bNumEndpoints);
 	printk(KERN_INFO "Interface class: %02X\n", id_if->desc.bInterfaceClass);
 
@@ -44,7 +44,8 @@ int pend_probe(struct usb_interface *intf, const struct usb_device_id *id)
 
 void pend_dis(struct usb_interface *intf)
 {
-	printk(KERN_INFO "Pen drive removed\n");
+	printk(KERN_INFO "I/f %d is disconnected\n", 
+		intf->cur_altsetting->desc.bInterfaceNumber);
 }
 
 struct usb_driver pen_fops = {
