@@ -1,6 +1,7 @@
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/usb.h>
+#include <linux/uaccess.h>
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Vinh");
@@ -72,7 +73,7 @@ static int pen_open(struct inode *inodp, struct file *filp)
 	return 0;
 }
 
-static int pen_release(struct inode *, struct file *filp)
+static int pen_close(struct inode *inodp, struct file *filp)
 {
 	return 0;
 }
@@ -109,7 +110,7 @@ int pend_probe(struct usb_interface *intf, const struct usb_device_id *id)
 	pen_device = interface_to_usbdev(intf);
 	class.name = "pen%d";
 	class.fops = &fops;
-	if(usb_register_dev(pen_device, &class) < 0)
+	if(usb_register_dev(intf, &class) < 0)
 	{
 		printk(KERN_INFO "Not able to get a minor for this device\n");
 		return -1;
