@@ -127,6 +127,7 @@ void pend_dis(struct usb_interface *intf)
 {
 	printk(KERN_INFO "I/f %d is disconnected\n", 
 		intf->cur_altsetting->desc.bInterfaceNumber);
+	usb_deregister_dev(intf, &class);
 }
 
 struct usb_driver pen_fops = {
