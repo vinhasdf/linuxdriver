@@ -5,6 +5,7 @@
 #include <linux/slab.h>
 #include <linux/uaccess.h>
 #include <linux/errno.h>
+#include <linux/mm.h>
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Vinh");
@@ -14,7 +15,7 @@ char *membuff;
 struct cdev cdev;
 struct class *memclass;
 
-staitc int mem_open(struct inode *inodp, struct file *filp)
+static int mem_open(struct inode *inodp, struct file *filp)
 {
     return 0;
 }
@@ -64,7 +65,7 @@ static int mem_mmap(struct file *filp, struct vm_area_struct *vma)
 
     physic = virt_to_phys(membuff + offset);
     vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-    vma->vm_flags |= VM_RESERVED;
+    vma->vm_flags |= (VM_DONTEXPAND | VM_DONTDUMP); // == VM_RESERVED at old kernel version
 
     if(remap_pfn_range(vma, vma->vm_start, physic >> PAGE_SHIFT, map_size, vma->vm_page_prot))
     {
@@ -90,7 +91,7 @@ static int memdev_init(void)
 
     membuff = __get_free_page(GFP_KERNEL);
 
-    if(alloc_chrdev_region(&memdev_deviceum, 0, 1, "memdev"))
+    if(alloc_chrdev_region(&memdev_devicenum, 0, 1, "memdev"))
     {
         printk(KERN_INFO "Cannot alloc device number\n");
         ret = -ENOMEM;
@@ -104,10 +105,10 @@ static int memdev_init(void)
         ret = -ENOMEM;
         goto failclass;
     }
-    device_create(memclass, NULL, memdev_deviceum, NULL, "memdev");
+    device_create(memclass, NULL, memdev_devicenum, NULL, "memdev");
 
     cdev_init(&cdev, &fops);
-    ret = cdev_add(&cdev, memdev_deviceum, 1);
+    ret = cdev_add(&cdev, memdev_devicenum, 1);
     if(ret < 0)
     {
         printk(KERN_INFO "Cannot add cdev\n");
@@ -118,7 +119,7 @@ static int memdev_init(void)
 
     return 0;
     cdevfail:
-    device_destroy(memclass, memdev_deviceum);
+    device_destroy(memclass, memdev_devicenum);
     class_destroy(memclass);
     failclass:
     unregister_chrdev_region(memdev_devicenum, 1);
@@ -130,7 +131,7 @@ static int memdev_init(void)
 static void memdev_exit(void)
 {
     cdev_del(&cdev);
-    device_destroy(memclass, memdev_deviceum);
+    device_destroy(memclass, memdev_devicenum);
     class_destroy(memclass);
     unregister_chrdev_region(memdev_devicenum, 1);
     free_page(membuff);
