@@ -2,12 +2,14 @@
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/genhd.h>
+#include <linux/blkdev.h>
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Vinhasdf");
 
 #define SIMPLE_BLOCK_SECTOR_SIZE    512
-#define SIMPLE_BLOCK_NUM_SECTOR     1000
+#define SIMPLE_BLOCK_NUM_SECTOR     100
+#define KERNEL_SECTOR_SIZE          512
 
 struct gendisk *simpledisk;
 int major;
@@ -43,6 +45,8 @@ static int block_init(void)
     simpledisk->minors = 1;
     simpledisk->fops = &blfops;
     strncpy(simpledisk->disk_name, "simple_block", sizeof(simpledisk->disk_name));
+    set_capacity(simpledisk, SIMPLE_BLOCK_NUM_SECTOR * 
+        (SIMPLE_BLOCK_SECTOR_SIZE/KERNEL_SECTOR_SIZE));
     simpledisk->queue = blk_init_queue(bl_request, NULL);
     if(simpledisk->queue == NULL)
     {
